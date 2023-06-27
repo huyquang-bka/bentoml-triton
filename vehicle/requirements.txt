@@ -1,0 +1,7 @@
+bentoml[triton]==1.0.19
+tritonclient[all]>=2.29.0
+opencv-python
+pydantic
+locust
+torch
+torchvision

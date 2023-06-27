@@ -1,0 +1,5 @@
+bentoml
+numpy
+torch
+torchvision
+opencv-python
