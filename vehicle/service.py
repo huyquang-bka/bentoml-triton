@@ -1,7 +1,6 @@
 import bentoml
 import helpers
 import typing as t
-import time
 import numpy as np
 import cv2
 
@@ -21,7 +20,7 @@ svc = bentoml.Service(
 )
 async def ensemble(payload: dict) -> dict:
     base64_str = payload["image_base64"]
-    image = helpers.base64_2_cv2(base64_str)
+    image = helpers.base64_2_img(base64_str)
     images = np.expand_dims(image, axis=0)
     InferResult = await triton_runner.ensemble.async_run(images)
     output = InferResult.as_numpy("output-post-vehicle")
@@ -30,7 +29,7 @@ async def ensemble(payload: dict) -> dict:
         x1, y1, x2, y2, conf, cls = bbox
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
         cv2.putText(image, f"{cls}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    result_base64 = helpers.cv2_2_base64(image)
+    result_base64 = helpers.img_2_base64(image)
     return {"output": bboxes, "result_base64": result_base64}
 
 
@@ -39,7 +38,7 @@ async def ensemble(payload: dict) -> dict:
 )
 async def pre_vehicle(payload: dict) -> dict:
     base64_str = payload["image_base64"]
-    image = helpers.base64_2_cv2(base64_str)
+    image = helpers.base64_2_img(base64_str)
     images = np.expand_dims(image, axis=0)
     InferResult = await triton_runner.pre_vehicle.async_run(images)
     output = InferResult.as_numpy("output-pre-vehicle")
